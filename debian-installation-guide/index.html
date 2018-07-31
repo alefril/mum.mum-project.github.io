@@ -78,7 +78,7 @@ If you have a working PHP 7.2 webserver setup, please jump to the <a href="#inst
 <p>Make sure your system is up-to-date and you have installed the following packages:</p>
 <div class="rounded my-2 p-4 bg-grey-lightest">
     <pre class="language-bash" style="margin: 0; padding: 0;"><code>sudo apt-get update &amp;&amp; sudo apt-get upgrade
-sudo apt-get install unzip curl wget acl</code></pre>
+sudo apt-get install unzip curl wget acl git</code></pre>
 </div>
 <h2>Installing PHP 7.2</h2>
 <p>Since Debian Stretch only ships with PHP 7.0 (as of 2018), we have to install a new package repository that allows
@@ -93,7 +93,7 @@ sudo apt-get update</code></pre>
 <p>The next step is to actually install PHP and all necessary extensions.
 The following commands should be executed with root privileges (use <code>sudo</code> or login with user <code>root</code>).</p>
 <div class="rounded my-2 p-4 bg-grey-lightest">
-    <pre class="language-bash" style="margin: 0; padding: 0;"><code>apt-get install php7.2 php7.2-mbstring php7.2-xml php7.2-zip \
+    <pre class="language-bash" style="margin: 0; padding: 0;"><code>sudo apt-get install php7.2 php7.2-mbstring php7.2-xml php7.2-zip \
 php7.2-cli php7.2-common php7.2-curl php7.2-json php7.2-mysql php7.2-opcache</code></pre>
 </div>
 <p>Now, when you execute <code>php -v</code> you should see something like</p>
@@ -106,10 +106,12 @@ Zend Engine v3.2.0, Copyright (c) 1998-2018 Zend Technologies
 <h2>Installing MySQL / MariaDB</h2>
 <p>Firstly, we need to install a database server. We are going to use MariaDB here.</p>
 <div class="rounded my-2 p-4 bg-grey-lightest">
-    <pre class="language-bash" style="margin: 0; padding: 0;"><code>apt-get install mariadb-server</code></pre>
+    <pre class="language-bash" style="margin: 0; padding: 0;"><code>sudo apt-get install mariadb-server
+sudo mysql -u root</code></pre>
 </div>
-<p>Secondly, we need to create the database and several users. Please choose <strong>secure</strong> passwords for your users.
-<a href="https://www.eff.org/dice">Diceware</a> is one way of generating secure passwords that are easily typeable and memorable.</p>
+<p>The last command opened a MySQL shell. Now, we need to create the database and several users.
+Please choose <strong>secure</strong> passwords for your users. <a href="https://www.eff.org/dice">Diceware</a> is one way of
+generating secure passwords that are easily typeable and memorable.</p>
 <div class="rounded my-2 p-4 bg-grey-lightest">
     <pre class="language-sql" style="margin: 0; padding: 0;"><code>CREATE USER mum@localhost IDENTIFIED BY 'my_secure_password_1';
 CREATE USER mum_postfix@localhost IDENTIFIED BY 'my_secure_password_2';
@@ -119,6 +121,7 @@ GRANT ALL PRIVILEGES ON mum.* TO mum@localhost;
 GRANT SELECT ON mum.* TO mum_postfix@localhost;
 GRANT SELECT ON mum.* TO mum_dovecot@localhost;</code></pre>
 </div>
+<p>To exit the MySQL shell, simply type <code>exit;</code>.</p>
 <h2>Configuring Apache2</h2>
 <p>When installing the <code>php7.2</code> package, the <code>apache2</code> should have automatically been installed as well.
 To check if Apache2 is running, execute <code>sudo service apache2 status</code>.
@@ -143,7 +146,7 @@ change your file paths in the following configuration files accordingly.</p>
 <p>The first step is to create a configuration file for the domain that should serve MUM's web interface.
 We are going to use <code>mum.example.com</code> here, please change that name to your domain.</p>
 <div class="rounded my-2 p-4 bg-grey-lightest">
-    <pre class="language-bash" style="margin: 0; padding: 0;"><code>nano /etc/apache2/sites-available/mum.example.com.conf</code></pre>
+    <pre class="language-bash" style="margin: 0; padding: 0;"><code>sudo nano /etc/apache2/sites-available/mum.example.com.conf</code></pre>
 </div>
 <p>Inside this configuration file we need to specify a virtual host that listens on port 443.
 <code>ServerName</code> is the domain where MUM's web interface will be served. <code>DocumentRoot</code> is the path to MUM's
@@ -187,12 +190,6 @@ leave out the <code>ServerName</code> directive.</p>
     RewriteCond %{HTTPS} off
     RewriteRule ^ https://%{SERVER_NAME}%{REQUEST_URI} [END,QSA,R=permanent]
 &lt;/VirtualHost&gt;</code></pre>
-</div>
-<h2>Installing Git</h2>
-<p>To be able to clone MUM from GitHub, make sure you have <code>git</code> installed on your machine.
-If you haven't, execute the following command to install it:</p>
-<div class="rounded my-2 p-4 bg-grey-lightest">
-    <pre class="language-bash" style="margin: 0; padding: 0;"><code>apt-get install git</code></pre>
 </div>
 <h2>Installing Composer</h2>
 <p>The next thing we need is the PHP dependency manager <a href="https://getcomposer.org/">Composer</a>.
