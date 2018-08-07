@@ -176,13 +176,13 @@ If you don't use Certbot with Let's Encrypt certificates, you will probably need
     SSLCipherSuite 'EDH+CAMELLIA:EDH+aRSA:EECDH+aRSA+AESGCM:EECDH+aRSA+SHA256:EECDH:+CAMELLIA128:+AES128:+SSLv3:!aNULL:!eNULL:!LOW:!3DES:!MD5:!EXP:!PSK:!DSS:!RC4:!SEED:!IDEA:!ECDSA:kEDH:CAMELLIA128-SHA:AES128-SHA'
 &lt;/VirtualHost&gt;</code></pre>
 </div>
-<p>The last step is to redirect all clients that use HTTP on port 80 to HTTPS on port 443.
+<p>Now we need to redirect all clients that use HTTP on port 80 to HTTPS on port 443.
 To do that, you could either add a second <code>VirtualHost</code> definition in your configuration file or create a second
 file that only holds your HTTP host(s). If you want to redirect HTTP traffic for all your virtual hosts,
 leave out the <code>ServerName</code> directive.</p>
 <div class="rounded my-3 overflow-hidden bg-grey-lightest">
     <div class="bg-grey-dark text-white px-4 py-2 text-sm text-right font-mono">
-        /etc/apache2/sites-available/http-mum.example.com.conf
+        /etc/apache2/sites-available/mum.example.com-http.conf
     </div>
     <pre class="m-0 p-4 language-apacheconf"><code>&lt;VirtualHost *:80&gt;
     ServerName mum.example.com
@@ -190,6 +190,12 @@ leave out the <code>ServerName</code> directive.</p>
     RewriteCond %{HTTPS} off
     RewriteRule ^ https://%{SERVER_NAME}%{REQUEST_URI} [END,QSA,R=permanent]
 &lt;/VirtualHost&gt;</code></pre>
+</div>
+<p>The last step is to enable the new VirtualHost in Apache2. Please use your actual domain
+or rather the name of your <code>.conf</code> file. What this command does is to create a symbolic
+link from <code>/etc/sites-enabled/mum.example.com.conf</code> to <code>/etc/sites-available/mum.example.com.conf</code>.</p>
+<div class="rounded my-2 p-4 bg-grey-lightest">
+    <pre class="language-bash" style="margin: 0; padding: 0;"><code>sudo a2ensite mum.example.com</code></pre>
 </div>
 <h2>Installing Composer</h2>
 <p>The next thing we need is the PHP dependency manager <a href="https://getcomposer.org/">Composer</a>.
@@ -259,6 +265,11 @@ DB_PORT=3306
 DB_DATABASE=mum
 DB_USERNAME=mum
 DB_PASSWORD=my_secret_password_1</code></pre>
+</div>
+<p>Another important step is to migrate the database. That means we are going to create the
+necessary tables in our database.</p>
+<div class="rounded my-2 p-4 bg-grey-lightest">
+    <pre class="language-bash" style="margin: 0; padding: 0;"><code>php artisan migrate</code></pre>
 </div>
 <h2>Creating Your First User</h2>
 <p>Since MUM does not have a web installer yet, you will need to use console commands to create your first user in MUM.
