@@ -101,8 +101,8 @@ Please ensure that your server meets the following requirements:</p>
 <li>Clone the repository from GitHub and open the resulting directory:
 <pre><code class="language-bash">git clone https://github.com/mum-project/mum.git
 cd mum/</code></pre></li>
-<li>Install the dependencies and compile the frontend Javascript code:
-<pre><code class="language-bash">composer install</code></pre></li>
+<li>Install the dependencies:
+<pre><code class="language-bash">composer install --optimize-autoloader --no-dev</code></pre></li>
 <li>Create a <code>.env</code> file for your local environment (and configure it) with
 <pre><code class="language-bash">cp .env.example .env
 nano .env</code></pre></li>
